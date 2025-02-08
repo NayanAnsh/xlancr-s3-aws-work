@@ -1,9 +1,10 @@
-import { BadRequestException, Body, Controller, Delete, Get, Post, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete , Get, Post, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import {AwsS3Service } from './aws-s3/aws-s3.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ImageGenratorService } from './image-generator/image-generator.service';
 import * as multer from "multer"
 import { ImageInterceptor } from './image-interceptor/image-interceptor.interceptor';
+import { ImageValidatorPipe } from './image-validator/image-validator.pipe';
 //Using image inceptor as global because currently almost all routes accept image
 @Controller('file')
 
@@ -22,7 +23,9 @@ export class FileController {
 ,ImageInterceptor
 )
   async generateImages(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile(
+      ImageValidatorPipe
+    ) file: Express.Multer.File,
     @Body() body: { folderName: string; fileCount: number; minRes: number; maxRes: number }
   ) {
     try {
