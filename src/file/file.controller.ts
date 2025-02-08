@@ -70,7 +70,7 @@ export class FileController {
     limits: { fileSize: 5 * 1024 * 1024 }, // 5MB file size limit
   }),ImageInterceptor)
   async resizeImage(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile(ImageValidatorPipe) file: Express.Multer.File,
     @Body() body: { folderName: string; width: number; height: number }
   ) {
     return await this.imageService.resizeImage(file.buffer, body.folderName, Number(body.width), Number(body.height));
@@ -85,7 +85,7 @@ export class FileController {
     limits: { fileSize: 5 * 1024 * 1024 }, // 5MB file size limit
   }),ImageInterceptor)
   async compressImage(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile(ImageValidatorPipe) file: Express.Multer.File,
     @Body() body: { folderName: string; quality: number }
   ) {
     return await this.imageService.compressImage(file.buffer, body.folderName, Number(body.quality));
@@ -100,7 +100,7 @@ export class FileController {
     limits: { fileSize: 5 * 1024 * 1024 }, // 5MB file size limit
   }),ImageInterceptor)
   async cropImage(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile(ImageValidatorPipe) file: Express.Multer.File,
     @Body() body: { folderName: string; width: number; height: number; left: number; top: number }
   ) {
     return await this.imageService.cropImage(file.buffer, body.folderName, Number(body.width), Number(body.height), Number(body.left), Number(body.top));
@@ -135,7 +135,7 @@ export class FileController {
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'),ImageInterceptor)
-  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+  async uploadFile(@UploadedFile(ImageValidatorPipe) file: Express.Multer.File) {
     
         const result = await this.s3Service.uploadFunc(file);
 
